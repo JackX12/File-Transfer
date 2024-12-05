@@ -1,28 +1,27 @@
-// 获取现有计时器逻辑
-let speed = 1; // 默认速度倍率
-let intervalId;
+(function () {
+    let speedMultiplier = 2; // 设置倍速，例如 2 表示 2 倍速
+    const timerElement = document.getElementById("lbl-time");
 
-// 动态启动计时器
-function startDynamicTimer() {
-    clearInterval(intervalId); // 清除旧的计时器
-    intervalId = setInterval(() => {
-        counter++;
-        document.getElementById("timer").textContent = counter;
-    }, 1000 / speed); // 调整速度
-}
-
-// 改变速度倍率并重新启动
-function changeSpeed(newSpeed) {
-    if (newSpeed > 0) {
-        speed = newSpeed;
-        startDynamicTimer();
-    } else {
-        console.error("速度必须大于 0");
+    if (!timerElement) {
+        console.error("计时器元素未找到！");
+        return;
     }
-}
 
-// 初始化计时器
-startDynamicTimer();
+    let [minutes, seconds] = timerElement.textContent.split(":").map(Number);
 
-// 调整速度示例：将速度倍率改为 2 倍
-changeSpeed(2); // 每 0.5 秒更新一次
+    // 启动自定义计时器
+    setInterval(() => {
+        seconds += speedMultiplier;
+        if (seconds >= 60) {
+            minutes += Math.floor(seconds / 60);
+            seconds = seconds % 60;
+        }
+        timerElement.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }, 1000);
+
+    // 监听 DOM 修改，阻止原始脚本覆盖
+    const observer = new MutationObserver(() => {
+        timerElement.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    });
+    observer.observe(timerElement, { childList: true });
+})();
