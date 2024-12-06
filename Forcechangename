@@ -1,0 +1,14 @@
+@echo off
+set "filepath=%~1"
+set "filename=%~nx1"
+set "newname=AAS%~nx1"
+
+:: 检测文件被占用的进程
+for /f "tokens=2 delims=," %%P in ('handle.exe "%filepath%"') do (
+    echo 文件被进程 %%P 占用，尝试结束...
+    taskkill /PID %%P /F
+)
+
+:: 重命名文件
+ren "%filepath%" "%newname%"
+echo 文件已重命名为 %newname%
