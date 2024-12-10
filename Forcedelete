@@ -1,0 +1,29 @@
+@echo off
+setlocal enabledelayedexpansion
+
+:: 获取拖入文件的完整路径
+set "filepath=%~1"
+
+:: 检测 handle 工具是否存在
+if not exist "handle.exe" (
+    echo 错误：未找到 handle.exe，请将其放置在此批处理文件目录或系统 PATH 中。
+    pause
+    exit /b
+)
+
+:: 查找占用该文件的进程
+for /f "tokens=2 delims=:" %%i in ('handle.exe "%filepath%" ^| findstr /i "pid:"') do (
+    set pid=%%i
+    echo 文件被进程 PID !pid! 占用，尝试结束...
+    taskkill /PID !pid! /F >nul 2>&1
+)
+
+:: 尝试删除文件
+del /f /q "%filepath%" >nul 2>&1
+if exist "%filepath%" (
+    echo 文件删除失败，请检查是否为系统文件。
+) else (
+    echo 文件已成功删除。
+)
+
+pause
