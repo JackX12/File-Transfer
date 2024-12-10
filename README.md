@@ -1,2 +1,1 @@
-# Sodoku-Solution
-数独解法
+#paasing
