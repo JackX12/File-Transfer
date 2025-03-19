@@ -1,0 +1,8 @@
+// 通过ID点击
+document.getElementById('按钮ID').click();
+
+// 通过类名点击（需确保唯一性）
+document.querySelector('.按钮类名').click();
+
+// 通过标签名点击（需结合其他选择器）
+document.querySelector('button').click();
