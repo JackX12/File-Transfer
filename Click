@@ -12,3 +12,42 @@ document.querySelectorAll('input, textarea').forEach(input => {
     input.value = 'com' + input.value;
   }
 });
+
+javascript:(function(){
+  'use strict';
+  
+  // == 功能配置 ==
+  const INPUT_SELECTOR = 'input[id*="search"]'; // 通过 ID 匹配文本框（示例）
+  const INPUT_TEXT = 'com';
+  const DELAY_AFTER_CLICK = 1000; // 点击后延迟 1 秒输入
+  
+  // == 核心逻辑 ==
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      try {
+        // 1. 查找目标文本框
+        const input = document.querySelector(INPUT_SELECTOR);
+        
+        if (!input) throw new Error(`未找到匹配的文本框（检查选择器）`);
+
+        // 2. 输入文字（两种方式可选）
+        // 方式一：直接设置 value（推荐）
+        input.value = INPUT_TEXT;
+
+        // 方式二：模拟键盘输入（更真实但复杂）
+        /*
+        const fill = (text) => {
+          for (const char of text) {
+            const event = new KeyboardEvent('keydown', { key: char });
+            input.dispatchEvent(event);
+          }
+        };
+        fill(INPUT_TEXT);
+        */
+
+      } catch (error) {
+        console.error('执行失败:', error.message);
+      }
+    }, DELAY_AFTER_CLICK);
+  });
+})();
