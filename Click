@@ -156,3 +156,9 @@ function validateSelector(selector) {
 
 // 使用示例
 validateSelector('#search-query, input[name*="q"]');
+
+
+
+00000000000
+
+javascript:(function(){/* 你的代码 */})();
