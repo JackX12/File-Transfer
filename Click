@@ -6,13 +6,13 @@ document.querySelector('.按钮类名').click();
 
 // 通过标签名点击（需结合其他选择器）
 document.querySelector('button').click();
-
+000000000
 document.querySelectorAll('input, textarea').forEach(input => {
   if (input.value.startsWith('')) {
     input.value = 'com' + input.value;
   }
 });
-
+000000000
 javascript:(function(){
   'use strict';
   
@@ -51,3 +51,87 @@ javascript:(function(){
     }, DELAY_AFTER_CLICK);
   });
 })();
+
+
+0000000
+
+javascript:(function() {
+  'use strict';
+  
+  // == 配置参数 ==
+  const TARGET_HOUR = 9;      // 目标小时数
+  const TARGET_MINUTE = 0;     // 目标分钟数
+  const TARGET_SECOND = 0;     // 目标秒数
+  const TIMEZONE = 'Asia/Shanghai'; // 时区（可选）
+  const POLL_INTERVAL = 1000;   // 轮询间隔（毫秒）
+
+  // == 核心逻辑 ==
+  function getScheduledTime() {
+    const now = new Date();
+    const target = new Date(now);
+    
+    // 设置目标时间
+    target.setHours(TARGET_HOUR, TARGET_MINUTE, TARGET_SECOND, 0);
+    
+    // 处理跨天逻辑
+    if (now > target) {
+      target.setDate(target.getDate() + 1);
+    }
+    
+    return target;
+  }
+
+  function executeTask() {
+    try {
+      // === 这里放置你的任务代码 ===
+      console.log(`[${new Date().toLocaleTimeString(TIMEZONE)}] 执行任务！`);
+      document.querySelector('input[id*="search"]').value = 'com';
+      
+      // 可选：持久化记录执行状态
+      localStorage.setItem('autoFillLastRun', new Date().toISOString());
+    } catch (error) {
+      console.error('任务执行失败:', { 
+        error: error.stack,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+
+  function scheduleTask() {
+    const scheduledTime = getScheduledTime();
+    const delay = scheduledTime - Date.now();
+    
+    if (delay <= 0) {
+      // 立即执行（防止时间计算误差）
+      executeTask();
+    } else {
+      setTimeout(scheduleTask, delay);
+    }
+  }
+
+  // == 启动调度 ==
+  scheduleTask();
+
+  // == 持久化重载保护 ==
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'autoFillLastRun') {
+      const lastRun = new Date(localStorage.getItem('autoFillLastRun'));
+      const now = new Date();
+      
+      // 如果上次执行在24小时内且页面未刷新
+      if (lastRun && now - lastRun < 24 * 60 * 60 * 1000) {
+        scheduleTask();
+      }
+    }
+  });
+
+  // == 初始加载检查 ==
+  const lastRun = localStorage.getItem('autoFillLastRun');
+  if (lastRun) {
+    const lastRunDate = new Date(lastRun);
+    if (lastRunDate.getDate() === new Date().getDate()) {
+      scheduleTask();
+    }
+  }
+})();
+
