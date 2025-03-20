@@ -135,3 +135,24 @@ javascript:(function() {
   }
 })();
 
+0000000
+
+// == 验证选择器有效性 ==
+function validateSelector(selector) {
+  try {
+    const elements = document.querySelectorAll(selector);
+    console.log(`找到 ${elements.length} 个匹配元素`);
+    elements.forEach(el => {
+      console.log(`- ID: ${el.id}`);
+      console.log(`- Class: ${el.className}`);
+      console.log(`- 属性: ${JSON.stringify(el.attributes)}`);
+    });
+    return elements;
+  } catch (error) {
+    console.error(`选择器验证失败: ${selector}`);
+    return null;
+  }
+}
+
+// 使用示例
+validateSelector('#search-query, input[name*="q"]');
