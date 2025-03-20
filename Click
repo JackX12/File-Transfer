@@ -162,3 +162,86 @@ validateSelector('#search-query, input[name*="q"]');
 00000000000
 
 javascript:(function(){/* 你的代码 */})();
+
+
+00000000
+
+javascript:(function() {
+  'use strict';
+  
+  // == 配置参数 ==
+  const SEARCH_TEXT = 'com';      // 要输入的文本
+  const INPUT_SELECTOR = 'input[type="text"], [id*="search"], [class*="search"]'; // 匹配规则
+  const KEYBOARD_DELAY = 50;       // 模拟按键间隔（毫秒）
+  const ENTER_KEY = { key: 'Enter', code: 'Enter' }; // 回车键配置
+
+  // == 核心逻辑 ==
+  async function simulateTyping(element, text) {
+    // 清空原有内容（可选）
+    element.value = '';
+    
+    // 逐个字符模拟输入
+    for (const char of text) {
+      const event = new KeyboardEvent('keydown', {
+        key: char,
+        code: `Key${char.toUpperCase()}`,
+        repeat: false,
+        ctrlKey: false,
+        altKey: false,
+        shiftKey: false,
+        metaKey: false
+      });
+
+      // 触发输入事件
+      element.dispatchEvent(event);
+      
+      // 等待浏览器处理（模拟人类输入节奏）
+      await new Promise(resolve => 
+        setTimeout(resolve, KEYBOARD_DELAY)
+      );
+    }
+
+    // 触发回车（根据需求选择）
+    if (text.endsWith('\n')) {
+      element.dispatchEvent(new KeyboardEvent('keydown', ENTER_KEY));
+    }
+  }
+
+  // == 动态元素匹配 ==
+  function findTargetElements() {
+    return [...document.querySelectorAll(INPUT_SELECTOR)]
+      .filter(el => {
+        // 排除不需要的元素（如数量输入框）
+        return !/[0-9]+$/.test(el.value) && 
+               el.offsetWidth > 0 && 
+               el.offsetHeight > 0;
+      });
+  }
+
+  // == 主执行流程 ==
+  async function main() {
+    const targets = findTargetElements();
+    
+    if (targets.length === 0) {
+      console.warn('未找到匹配的文本框！');
+      return;
+    }
+
+    console.log(`找到 ${targets.length} 个目标文本框，开始模拟输入...`);
+
+    for (const el of targets) {
+      try {
+        await simulateTyping(el, SEARCH_TEXT);
+        console.log(`✅ 成功在 [${el.id || el.className}] 输入 "com"`);
+      } catch (error) {
+        console.error(`❌ 处理元素失败：`, {
+          element: el.outerHTML,
+          error: error.stack
+        });
+      }
+    }
+  }
+
+  // == 启动程序 ==
+  document.addEventListener('DOMContentLoaded', main);
+})();
