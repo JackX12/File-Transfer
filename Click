@@ -251,3 +251,9 @@ javascript:(function() {
 0000000000
 
 javascript:(function(){const d=document;function w(e,c,t=2e3,l=50){return new Promise((n,o)=>{const r=performance.now();let s=setInterval(()=>{const i=e();if(i)return clearInterval(s),n(i);performance.now()-r>t&&(clearInterval(s),o())},l)})}async function k(){const e=await w(()=>[...d.querySelectorAll('input,textarea,[role="textbox"],[contenteditable="true"]')].find(t=>!t.disabled&&t.offsetWidth>0),2000);if(!e)return;e.focus();e.value='';const c='com',t=Array.from(c);for(const[n,o]of t.entries()){const r=new KeyboardEvent('keydown',{key:o,code:'Key'+o.toUpperCase(),keyCode:o.charCodeAt(0),bubbles:true}),l=new KeyboardEvent('keypress',{key:o,charCode:o.charCodeAt(0)}),s=new KeyboardEvent('keyup',{key:o});e.dispatchEvent(r);e.dispatchEvent(l);e.value+=o;e.dispatchEvent(new Event('input',{bubbles:true}));e.dispatchEvent(s);await new Promise(i=>setTimeout(i,80+Math.random()*40))}}k()})()
+
+
+
+000000
+
+javascript:(function(){var u=document.querySelector('input[type="text"],input[name*="user"],input[name*="name"],input[id*="user"],input[id*="login"],input[placeholder*="户名"]');u&&(u.value='a',u.dispatchEvent(new Event('input')));var p=document.querySelector('input[type="password"],input[name*="pass"],input[id*="pass"],input[placeholder*="密码"]');p&&(p.value='b',p.dispatchEvent(new Event('change')));})()
